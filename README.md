@@ -20,7 +20,9 @@ Create a set of smart contracts to support rating platforms (or recommender syst
 ## Overview
 
 The smart contract build up a system, with an entry point called RSF (Rating System Framework). People have to register themselves in order to publish items (contents) or rate existing items and become users. Item owners (users) can give permissions to rate their items to customers (users as well): both permissions grant, revoke and ratings are stored on the smart contracts, thus on the blockchain.
+
 The ratings can be read and used to compute the item final score by smart contracts called RatingFunctions. A rating function can implements any formulas, for example a simple average or weighted average on certain parameters.
+
 Moreover, the smart contracts provide the concept of "skill", i.e. a keyword identifying the property of an item. When a user rates an item he collects experience on the item's skill. If the user has high enough experience on the rated item's skill the user receives a discount proportional to the experience: the discount is represented by ERC20 tokens and can be used only on the item that issued them. However, being ERC20 compliant, such tokens are interchangeable across the Ethereum network.
 
 ![imgs](./imgs/Eth-Summary.png)
@@ -78,6 +80,7 @@ The ``package.json`` includes utility packages for the framework, such as ``truf
 
 ## Authors
 Andrea Lisi: [0Alic](https://github.com/0Alic)
+
 Samuel Fabrizi: [samuelfabrizi](https://github.com/samuelfabrizi)
 
 ## License
