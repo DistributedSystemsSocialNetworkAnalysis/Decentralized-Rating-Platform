@@ -78,11 +78,14 @@ contract("RatingSystemFramework: correctness test", accounts => {
         assert.equal(web3.utils.toUtf8(await bobItemObject.skill()), bobItemSkill, "Bob's item skill doesn't match");
         
         // update Carl skills with value equal to 3
-        await carlObject.updateSkill(web3.utils.fromUtf8(bobItemSkill), 3);
+        // await carlObject.updateSkill(web3.utils.fromUtf8(bobItemSkill), 3);
 
         // retrieve Carl skills
         const carlSkillsAddress = await carlObject.skills();
         const carlSkillsObject = await UserSkills.at(carlSkillsAddress);
+
+        // update Carl skills with value equal to 3
+        await carlSkillsObject.updateSkill(web3.utils.fromUtf8(bobItemSkill), 3);
 
         // check if Carl's skill has been update
         assert.equal(await carlSkillsObject.getSkillsNumber(), 1, "Carl skills number doesn't match");

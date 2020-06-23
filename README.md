@@ -23,9 +23,11 @@ The smart contract build up a system, with an entry point called RSF (Rating Sys
 
 The ratings can be read and used to compute the item final score by smart contracts called RatingFunctions. A rating function can implements any formulas, for example a simple average or weighted average on certain parameters.
 
-Moreover, the smart contracts provide the concept of "skill", i.e. a keyword identifying the property of an item. When a user rates an item he collects experience on the item's skill. If the user has high enough experience on the rated item's skill the user receives a discount proportional to the experience: the discount is represented by ERC20 tokens and can be used only on the item that issued them. However, being ERC20 compliant, such tokens are interchangeable across the Ethereum network.
+Moreover, the smart contracts provide the concept of "skill", i.e. a keyword identifying the property of an item. When a user rates an item he collects experience on the item's skill. If the user has high enough experience on the rated item's skill the user receives a discount proportional to the experience: the discount is represented by ERC20 tokens and can be used only on the item that issued them. In this way, each Item owner can set the best properties for them to the token (like price, total amount etc). 
 
-![imgs](./imgs/Eth-Summary.png)
+The Grant Permission shown in the figure below has the following semantics: if the customer pays (in crypto) the amount expected by the restaurant, the customer automatically receives the permissions to rate the restaurant. In the code such Grant Permission is called *commitPermission*. The motivation is described below the contract diagram.
+
+![imgs](./imgs/SummaryDiagram.png)
 
 ## Features
 
@@ -38,6 +40,8 @@ Moreover, the smart contracts provide the concept of "skill", i.e. a keyword ide
 ## Class diagram
 
 ![classes](./imgs/Classes.png)
+
+**Note:** In the diagram the contract Item has two grantPermission functions. However, due to issues from Truffle with function overloading ([ref](https://github.com/trufflesuite/truffle/issues/737)) in the code the Item contract the function *grantPermision(to, amount)* is called *commitPermission(to, amount)*.
 
 ## Installation and usage
 

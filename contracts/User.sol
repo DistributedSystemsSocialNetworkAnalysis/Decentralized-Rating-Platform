@@ -162,10 +162,11 @@ contract User is Ownable {
     /// @param _item The Item that receives the payment
     /// @param _amount The amount to be sent to that specific Item
     /// @dev This function does not return back the change (_amount - totalTokenValueAmount). The User contract keeps it
-    function payItem(Item _item, uint _amount) public payable {
+    function payItem(Item _item, uint _amount) public payable isOwner {
 
         require(_amount > 0, "The amount must be greater then 0");
         require(_amount == msg.value, "The amount to be sent does not match");
+        
         address payable item = address(uint160(address(_item)));
         uint256 totalTokenAmount = _item.getTokenOwned();
         uint256 totalTokenValueAmount = _item.getTokenOwnedValue();
@@ -188,13 +189,16 @@ contract User is Ownable {
 
 
 
-    /// @notice updates the value of a skill
-    /// @param _skill2update Skill to update
-    /// @param _value Value increment
-    function updateSkill(bytes32 _skill2update, uint _value) external {
+    // /// @notice updates the value of a skill
+    // /// @param _skill2update Skill to update
+    // /// @param _value Value increment
+    // function updateSkill(bytes32 _skill2update, uint _value) external {
         
-        skills.updateSkill(_skill2update, _value);
+    //     skills.updateSkill(_skill2update, _value);
+    // }
+
+    /// @notice Withdraw the ether in this contract
+    function withdraw() external isOwner {
+        msg.sender.transfer(address(this).balance);
     }
-
-
 }

@@ -12,7 +12,7 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 /// @title Item
 /// @notice This contract represents an item of the RatingSystemFramework. Items can be rated by external accounts or contract only if they have the permissions to do that
 /// @dev The Item contract inherits from Permissioned. It defines the structure of a Rating and it keeps a RatingFunction instance to let the users know how its final score will be computed
-contract Item is Permissioned {
+contract Item is Permissioned, Commited {
     using SafeMath for uint256;
 
     // Data
@@ -85,6 +85,24 @@ contract Item is Permissioned {
 
         // Call parent
         super.grantPermission(_to);
+    }
+
+
+    /// @notice Store a permission promise only if the User pays the input amount
+    /// @param _to The address grant the permission
+    /// @param amount The expected amount
+    /// @dev After checking _to is a correct User contract call the parent function
+    function commitPermission(address _to, uint amount) public isOwner {
+
+        // Check if the User and this Item belong to the same RSF
+        User u = User(_to);
+            // Require sender is User of RSF
+        require(u.iAmRegisteredUser(), "Rating can be done only by registered User contracts");
+            // Require User's RSF == my RSF
+        require(u.RSF() == RSF, "User should rate only Items beloning to its RSF");
+        require(u.owner() != owner, "Cannot grant permissions to User itself");
+
+        super.commitPermission(_to, amount);
     }
 
 
@@ -164,12 +182,19 @@ contract Item is Permissioned {
     /// @param _totalTokenAmount Amount of token to transfer
     function successfulPayment(User _user, uint _amount, uint256 _totalTokenAmount) external {
 
+        address _userA = address(_user);
+        require(super.isCommited(_userA, _amount + _totalTokenAmount*tokenValue), "Sum of amount and tokens does not match ");
+
+        super.revokeCommitment(_userA);
+        permissionMap[_userA] = PermissionPolicy({granted: true, periodStart: block.number});            
+
         if (_amount > 0){
             address payable ownerItem = address(uint160(owner));
             ownerItem.transfer(_amount);
         }
         if (_totalTokenAmount > 0)
             tokenContract.transferFrom(msg.sender, address(this), _totalTokenAmount);
+
         emit SuccessfulPayment(this, _user, _amount, _totalTokenAmount);
     }
 
